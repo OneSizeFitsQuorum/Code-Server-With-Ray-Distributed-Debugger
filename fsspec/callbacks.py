@@ -11,10 +11,10 @@ class Callback:
 
     Parameters
     ----------
-    size: int (optional)
+    size: int or callable (optional)
         Nominal quantity for the value that corresponds to a complete
         transfer, e.g., total number of tiles or total number of
-        bytes
+        bytes. Can also be a callable that returns an int.
     value: int (0)
         Starting internal counter value
     hooks: dict or None
@@ -23,7 +23,10 @@ class Callback:
     """
 
     def __init__(self, size=None, value=0, hooks=None, **kwargs):
-        self.size = size
+        if callable(size):
+            self.size = size()
+        else:
+            self.size = size
         self.value = value
         self.hooks = hooks or {}
         self.kw = kwargs
@@ -91,9 +94,14 @@ class Callback:
 
         Parameters
         ----------
-        size: int
+        size: int or callable
+            If int, the size value to set. If callable, a function that
+            returns an int representing the size.
         """
-        self.size = size
+        if callable(size):
+            self.size = size()
+        else:
+            self.size = size
         self.call()
 
     def absolute_update(self, value):

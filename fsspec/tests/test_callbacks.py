@@ -87,3 +87,25 @@ def test_tqdm_callback(tqdm_kwargs, mocker):
         callback._tqdm_cls.assert_called_with(total=10)
     else:
         callback._tqdm_cls.assert_called_with(total=10, **tqdm_kwargs)
+
+
+def test_set_size_callable():
+    """Test that set_size accepts a callable that returns an int"""
+    # Test with set_size method
+    callback = Callback()
+    size_func = lambda: 100
+    callback.set_size(size_func)
+    assert callback.size == 100
+    
+    # Test with __init__
+    callback2 = Callback(size=lambda: 200)
+    assert callback2.size == 200
+    
+    # Test with regular int still works
+    callback3 = Callback(size=50)
+    assert callback3.size == 50
+    
+    callback4 = Callback()
+    callback4.set_size(75)
+    assert callback4.size == 75
+
